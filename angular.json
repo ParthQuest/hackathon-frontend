@@ -11,7 +11,10 @@
       "schematics": {
         "@schematics/angular:application": {
           "strict": true
-        }
+        },
+        "@schematics/angular:component": {
+          "style": "scss"       
+        } 
       },
       "root": "",
       "sourceRoot": "src",
@@ -30,9 +33,15 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css"
             ],
-            "scripts": []
+            "scripts": [ ],
+            "allowedCommonJsDependencies": [
+              "uploader"
+            ]
           },
           "configurations": {
             "production": {
