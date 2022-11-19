@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { DocExplorerService } from './doc-explorer.service';
 
 @Component({
   selector: 'app-doc-explorer',
@@ -95,8 +96,10 @@ export class DocExplorerComponent implements OnInit {
     { label: 'Lionel Messi', url: 'https://en.wikipedia.org/wiki/Lionel_Messi' }
   ];
 
-  constructor() { }
+  constructor(private docService: DocExplorerService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.docService.getFolderData();
+  }
 
 }

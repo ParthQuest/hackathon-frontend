@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  dms: "http://localhost:7040/api"
 };
