@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, firstValueFrom, map } from "rxjs";
+import { GetParamsType } from "../common";
 
 @Injectable({
   providedIn: "root"
@@ -26,7 +27,7 @@ export class ApiService {
     }));
   }
 
-  GETCall<T>(apiEndPoint: string, params: GetParamsType) {
+  GETCall<T>(apiEndPoint: string, params?: GetParamsType) {
     return this.http.get<T>(apiEndPoint, {
       headers: this.getHeaders(),
       responseType: "json",
@@ -39,28 +40,11 @@ export class ApiService {
   }
 
   async POSTCallAsync<T>(apiEndPoint: string, reqBody: Object) {
-    return firstValueFrom(this.POSTCall(apiEndPoint, reqBody));
+    return firstValueFrom(this.POSTCall<T>(apiEndPoint, reqBody));
   }
 
-  async GETCallAsync(apiEndPoint: string, params: GetParamsType) {
-    return firstValueFrom(this.GETCall(apiEndPoint, params));
+  async GETCallAsync<T>(apiEndPoint: string, params?: GetParamsType) {
+    return firstValueFrom(this.GETCall<T>(apiEndPoint, params));
   }
 
-}
-
-export type GetParamsType = HttpParams | {
-  [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
-};
-
-export interface IAPIErrorData {
-  ErrorCode: string;
-  Error: string;
-  ErrorDetail: Object;
-}
-
-export interface IAPIResponse<T> {
-  ErrorData: IAPIErrorData;
-  Message: string;
-  ResponseData: T;
-  ResponseStatus: string;
 }

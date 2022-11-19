@@ -9,7 +9,7 @@ import { DocExplorerService } from './doc-explorer.service';
 })
 export class DocExplorerComponent implements OnInit {
 
-  items: MenuItem[] = [
+  menuItems: Array<MenuItem> = [
     {
       label: 'File',
       icon: 'pi pi-pw pi-file',
@@ -85,7 +85,7 @@ export class DocExplorerComponent implements OnInit {
     }
   ];
 
-  breadcrumbItems: MenuItem[] = [
+  breadcrumbItems: Array<MenuItem> = [
     { label: 'Categories' },
     { label: 'Sports' },
     { label: 'Football' },
@@ -98,8 +98,6 @@ export class DocExplorerComponent implements OnInit {
 
   constructor(private docService: DocExplorerService) { }
 
-  ngOnInit(): void {
-    this.docService.getFolderData();
-  }
+  ngOnInit(): void { }
 
 }
