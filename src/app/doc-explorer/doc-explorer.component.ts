@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { DocExplorerService } from './doc-explorer.service';
+import { DocExplorerVM as vm } from "./doc-explorer.model";
 
 @Component({
   selector: 'app-doc-explorer',
@@ -9,95 +10,54 @@ import { DocExplorerService } from './doc-explorer.service';
 })
 export class DocExplorerComponent implements OnInit {
 
-  menuItems: Array<MenuItem> = [
-    {
-      label: 'File',
-      icon: 'pi pi-pw pi-file',
-      items: [{
-        label: 'New',
-        icon: 'pi pi-fw pi-plus',
-        items: [
-          { label: 'User', icon: 'pi pi-fw pi-user-plus' },
-          { label: 'Filter', icon: 'pi pi-fw pi-filter' }
-        ]
-      },
-      { label: 'Open', icon: 'pi pi-fw pi-external-link' },
-      { separator: true },
-      { label: 'Quit', icon: 'pi pi-fw pi-times' }
-      ]
-    },
-    {
-      label: 'Edit',
-      icon: 'pi pi-fw pi-pencil',
-      items: [
-        { label: 'Delete', icon: 'pi pi-fw pi-trash' },
-        { label: 'Refresh', icon: 'pi pi-fw pi-refresh' }
-      ]
-    },
-    {
-      label: 'Help',
-      icon: 'pi pi-fw pi-question',
-      items: [
-        {
-          label: 'Contents',
-          icon: 'pi pi-pi pi-bars'
-        },
-        {
-          label: 'Search',
-          icon: 'pi pi-pi pi-search',
-          items: [
-            {
-              label: 'Text',
-              items: [
-                {
-                  label: 'Workspace'
-                }
-              ]
-            },
-            {
-              label: 'User',
-              icon: 'pi pi-fw pi-file',
-            }
-          ]
-        }
-      ]
-    },
-    {
-      label: 'Actions',
-      icon: 'pi pi-fw pi-cog',
-      items: [
-        {
-          label: 'Edit',
-          icon: 'pi pi-fw pi-pencil',
-          items: [
-            { label: 'Save', icon: 'pi pi-fw pi-save' },
-            { label: 'Update', icon: 'pi pi-fw pi-save' },
-          ]
-        },
-        {
-          label: 'Other',
-          icon: 'pi pi-fw pi-tags',
-          items: [
-            { label: 'Delete', icon: 'pi pi-fw pi-minus' }
-          ]
-        }
-      ]
-    }
-  ];
-
-  breadcrumbItems: Array<MenuItem> = [
-    { label: 'Categories' },
-    { label: 'Sports' },
-    { label: 'Football' },
-    { label: 'Countries' },
-    { label: 'Spain' },
-    { label: 'F.C. Barcelona' },
-    { label: 'Squad' },
-    { label: 'Lionel Messi', url: 'https://en.wikipedia.org/wiki/Lionel_Messi' }
-  ];
+  menuItems = new Array<MenuItem>();
+  breadcrumbItems = new Array<MenuItem>();
+  home: MenuItem = { icon: 'pi pi-home', command: (event) => this.setFolderSpace() };
+  selectedFolder = new Array<vm.IDMSGetFileResp>();
 
   constructor(private docService: DocExplorerService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.setFolderMenu();
+    this.setFolderSpace();
+  }
+
+  setFolderMenu() {
+    let recursiveMap = (item: vm.IMenuItemResp): MenuItem => {
+      return {
+        label: item.Name,
+        icon: "pi pi-folder",
+        id: item.Id?.toString(),
+        items: item.Item?.map(x => recursiveMap(x))
+      };
+    };
+    this.docService.getFolderMenu().then(items => {
+      this.menuItems = items.map(x => recursiveMap(x));
+    }).catch(error => { });
+  }
+
+  setFolderSpace(folder?: vm.IDMSGetFileResp) {
+    this.docService.getFolderData(folder?.Id).then(data => {
+      this.selectedFolder = data;
+      if (folder)
+        this.appendBreadcrumb(folder);
+      else
+        this.breadcrumbItems = new Array<MenuItem>();
+    }).catch(error => { });
+  }
+
+  onBreadcrumbClick(item: MenuItem) {
+    let existingIndex = this.breadcrumbItems.findIndex(x => x.id == item.id);
+    this.breadcrumbItems.splice(existingIndex);
+  }
+
+  appendBreadcrumb(item: vm.IDMSGetFileResp) {
+    this.breadcrumbItems = [ ...this.breadcrumbItems, {
+      label: item.Name,
+      id: item.Id?.toString(),
+      command: (event) => this.setFolderSpace(item)
+    }];
+  }
+
 
 }

@@ -4,10 +4,17 @@
   </aside>
   <main class="page-main">
     <section>
-      <p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+      <p-breadcrumb [model]="breadcrumbItems" [home]="home" (onItemClick)="onBreadcrumbClick($event)"></p-breadcrumb>
     </section>
-    <section>
-      <app-img-uploader></app-img-uploader>
+    <section style="margin-top: 1rem;">
+      <div *ngFor="let item of selectedFolder; let i = index;" style="cursor: pointer;"
+        (click)="setFolderSpace(item)">
+        <i class="pi" [ngClass]="{
+          'pi-image': !item?.IsFolder,
+          'pi-folder': item?.IsFolder
+        }" style="margin-right: 0.5rem;"></i>
+        <span>{{item?.Name}}</span>
+      </div>
     </section>
   </main>
 </div>

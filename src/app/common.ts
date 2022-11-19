@@ -21,3 +21,7 @@ export interface IAPIResponse<T> {
   ResponseData: T;
   ResponseStatus: string;
 }
+
+export function isDefined<T>(value: T) {
+  return value !== null && value !== undefined;
+}

@@ -11,6 +11,7 @@ export namespace DocExplorerVM {
   export interface IDMSGetReq {
     FolderId?: number;
   }
+  
   export interface IDMSGetFileResp {
     Id: number;
     Name: string;
@@ -26,7 +27,7 @@ export namespace DocExplorerVM {
   }
 
   export interface IMenuItemResp extends IFolderItemResp {
-    Item: Array<IFolderItemResp>;
+    Item: Array<IMenuItemResp>;
   }
 
 }
