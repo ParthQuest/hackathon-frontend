@@ -9,11 +9,33 @@ import { Uploader, UploaderOptions, UploaderResult } from "uploader";
 export class ImgUploaderComponent implements OnInit {
 
   uploader = new Uploader({
-    apiKey:'free'
+    apiKey:'public_12a1xsVnXdJvb92LMVcTZkKtDDV1'
+    //apiKey:'free'
   });
   
-  uploadOptions: UploaderOptions = {
-    multi: true
+  uploadOptions: any = {
+    multi: false,
+    // Image Editor
+    editor: {
+      images: {
+        crop: false 
+      }
+    },
+   // Accepted Files
+    maxFileCount: 10,
+    maxFileSizeBytes: 5 * 1024 * 1024,
+    mimeTypes: ["image/jpg","image/jpeg","image/png"],
+    path: "/uploads" ,
+    styles: {
+           // Colors & Font Size
+          colors: {
+            primary: "#377dff", 
+            active: "#528fff"
+          },
+          fontSizes: {
+            base: 16
+          }
+        }
   };
 
   constructor() { }
