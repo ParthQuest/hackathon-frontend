@@ -4,11 +4,18 @@
   </aside>
   <main class="page-main">
     <section>
-      <p-breadcrumb [model]="breadcrumbItems" [home]="home" (onItemClick)="onBreadcrumbClick($event)"></p-breadcrumb>
+      <div class="row">
+        <div class="col-9">
+          <p-breadcrumb [model]="breadcrumbItems" [home]="home" (onItemClick)="onBreadcrumbClick($event)"></p-breadcrumb>
+        </div>
+        <div class="col-3">
+          <input type="text" id="inputtext" pInputText [(ngModel)]="filter" placeholder="Search"> 
+        </div>
+      </div>
     </section>
     <section style="margin-top: 1rem;">
       <div *ngFor="let item of selectedFolder; let i = index;" style="cursor: pointer;"
-        (click)="setFolderSpace(item)">
+        (click)="setFolderSpace(item?.Name, item?.Id)">
         <i class="pi" [ngClass]="{
           'pi-image': !item?.IsFolder,
           'pi-folder': item?.IsFolder

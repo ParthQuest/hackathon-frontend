@@ -5,6 +5,8 @@ import { DocExplorerComponent } from './doc-explorer.component';
 import { ImgUploaderModule } from '../img-uploader/img-uploader.module';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { FormsModule } from '@angular/forms';
+import { InputTextModule } from "primeng/inputtext";
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
     DocExplorerRoutingModule,
     ImgUploaderModule,
     PanelMenuModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    FormsModule,
+    InputTextModule
   ],
   exports: [
     DocExplorerComponent

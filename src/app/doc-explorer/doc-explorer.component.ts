@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { DocExplorerService } from './doc-explorer.service';
 import { DocExplorerVM as vm } from "./doc-explorer.model";
+import { isNotEmptyArray } from '../common';
 
 @Component({
   selector: 'app-doc-explorer',
@@ -14,6 +15,7 @@ export class DocExplorerComponent implements OnInit {
   breadcrumbItems = new Array<MenuItem>();
   home: MenuItem = { icon: 'pi pi-home', command: (event) => this.setFolderSpace() };
   selectedFolder = new Array<vm.IDMSGetFileResp>();
+  filter: string = '';
 
   constructor(private docService: DocExplorerService) { }
 
@@ -23,24 +25,23 @@ export class DocExplorerComponent implements OnInit {
   }
 
   setFolderMenu() {
-    let recursiveMap = (item: vm.IMenuItemResp): MenuItem => {
-      return {
-        label: item.Name,
-        icon: "pi pi-folder",
-        id: item.Id?.toString(),
-        items: item.Item?.map(x => recursiveMap(x))
-      };
-    };
+    let recursiveMap = (items: Array<vm.IMenuItemResp>): Array<MenuItem> => items.map(x => ({
+      label: x.Name,
+      icon: "pi pi-folder",
+      id: x.Id?.toString(),
+      items: isNotEmptyArray(x.Items) ? recursiveMap(x.Items) : undefined,
+      command: (event) => this.setFolderSpace(x.Name, x.Id)
+    }));
     this.docService.getFolderMenu().then(items => {
-      this.menuItems = items.map(x => recursiveMap(x));
+      this.menuItems = recursiveMap(items);
     }).catch(error => { });
   }
 
-  setFolderSpace(folder?: vm.IDMSGetFileResp) {
-    this.docService.getFolderData(folder?.Id).then(data => {
+  setFolderSpace(folderName?: string, folderId?: number) {
+    this.docService.getFolderData(folderId).then(data => {
       this.selectedFolder = data;
-      if (folder)
-        this.appendBreadcrumb(folder);
+      if (folderName && folderId)
+        this.appendBreadcrumb(folderName, folderId);
       else
         this.breadcrumbItems = new Array<MenuItem>();
     }).catch(error => { });
@@ -51,13 +52,14 @@ export class DocExplorerComponent implements OnInit {
     this.breadcrumbItems.splice(existingIndex);
   }
 
-  appendBreadcrumb(item: vm.IDMSGetFileResp) {
-    this.breadcrumbItems = [ ...this.breadcrumbItems, {
-      label: item.Name,
-      id: item.Id?.toString(),
-      command: (event) => this.setFolderSpace(item)
-    }];
+  appendBreadcrumb(label: string, id: number) {
+    if (!~this.breadcrumbItems.findIndex(x => x.id == id.toString())) {
+      this.breadcrumbItems = [ ...this.breadcrumbItems, {
+        label: label,
+        id: id.toString(),
+        command: (event) => this.setFolderSpace(label, id)
+      }];
+    }
   }
-
 
 }

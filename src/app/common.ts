@@ -25,3 +25,7 @@ export interface IAPIResponse<T> {
 export function isDefined<T>(value: T) {
   return value !== null && value !== undefined;
 }
+
+export function isNotEmptyArray<T extends { length: number }>(value: T) {
+  return isDefined(value) && Array.isArray(value) && value.length;
+}

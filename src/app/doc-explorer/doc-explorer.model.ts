@@ -27,7 +27,7 @@ export namespace DocExplorerVM {
   }
 
   export interface IMenuItemResp extends IFolderItemResp {
-    Item: Array<IMenuItemResp>;
+    Items: Array<IMenuItemResp>;
   }
 
 }
