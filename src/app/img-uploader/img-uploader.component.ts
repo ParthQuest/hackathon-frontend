@@ -9,8 +9,17 @@ import { ImgUploaderService } from './img-uploader.service';
 })
 export class ImgUploaderComponent implements OnInit {
   constructor(private imgUploadService: ImgUploaderService) { }
-
-  ngOnInit(): void { }
+  categoryName: string = '';
+  displayTagModal: boolean = false;
+  imgsrc: string = '';
+  fileName: string = '';
+  fileUrl: string = '';
+  TagList: any[] = [];
+  TagListData: any[] = [];
+  selectedTag: any = '';
+  TagLimit:number = 7
+  ngOnInit(): void {
+  }
 
   uploader = new Uploader({
     apiKey: 'public_12a1xsVnXdJvb92LMVcTZkKtDDV1'
@@ -42,17 +51,49 @@ export class ImgUploaderComponent implements OnInit {
 
     onUpdate: (files) => {
       var cdnUrl = files[0].fileUrl;
-      console.log(cdnUrl);
-      this.getTagList(cdnUrl);
+      this.categories(cdnUrl);
+      this.tagList(cdnUrl, files);
     },
 
   };
 
-  async getTagList(url:string) {
-    debugger
-      this.imgUploadService.getTagList(url).then(tagItems => {
-        var tagList = tagItems;
-        console.log(tagList);
-      })
+  async categories(url: string) {
+    this.imgsrc ='';
+    this.imgsrc = url;
+    var splitImg = url.substring(0, url.lastIndexOf('/'));
+    this.imgUploadService.getCategoryList(splitImg).then(categItems => {
+      this.categoryName = categItems.categories[0].name.en;
+    })
+  }
+
+  async tagList(url: string, files) {
+    var splitImg = url.substring(0, url.lastIndexOf('/'));
+    this.imgUploadService.getTagList(splitImg).then(taglist => {
+      this.TagList = taglist.tags.length > 7 ? taglist.tags.map(x => x.tag).splice(0,this.TagLimit) :taglist.tags.map(x => x.tag) ;
+      this.TagListData = taglist.tags.map(x => x.tag.en);
+    });
+    this.opensaveTagModal(url, files);
+  }
+
+  opensaveTagModal(url, files) {
+    this.displayTagModal = true;
+    this.fileName = files[0].originalFile.file.name,
+      this.fileUrl = url
+  }
+
+  saveTag() {
+    var req = {
+      FileName: this.fileName,
+      FileUrl: this.fileUrl,
+      CategoryName: this.categoryName,
+      SubCategoryName: this.selectedTag.en,
+      Tags: this.TagListData
+    }
+    this.imgUploadService.saveTag(req).then(categItems => {
+      if (categItems) {
+        console.log(categItems);
+      }
+      console.log(this.categoryName);
+    })
   }
 }

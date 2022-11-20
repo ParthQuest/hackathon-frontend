@@ -14,16 +14,19 @@ export class ApiService {
     private spinnerService: CommonSpinnerService
   ) { }
 
-  getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json'
+  getHeaders(isAuth?:boolean) {
+    let headers = new HttpHeaders({
+      // 'Content-Type': 'application/json'
     });
+    if (isAuth)
+      headers = headers.set('authorization', 'Basic YWNjXzVjOTRiMTY0NTdjZGI1Yjo3YWE3MDA5Y2UwNjBkOWRkYTMxNmM4MTQwMWVkNWRiOQ==');
+    return headers;
   }
 
-  POSTCall<T>(apiEndPoint: string, reqBody: Object) {
+  POSTCall<T>(apiEndPoint: string, reqBody: Object, isAuth?:boolean) {
     this.spinnerService.showSpinner();
     return this.http.post<T>(apiEndPoint, reqBody, {
-      headers: this.getHeaders(),
+      headers: this.getHeaders(isAuth),
       responseType: "json"
     }).pipe(map(response => {
       return response;
@@ -32,9 +35,9 @@ export class ApiService {
     }), finalize(() => this.spinnerService.hideSpinner()));
   }
 
-  GETCall<T>(apiEndPoint: string, params?: GetParamsType) {
+  GETCall<T>(apiEndPoint: string, params?: GetParamsType, isAuth?:boolean) {
     return this.http.get<T>(apiEndPoint, {
-      headers: this.getHeaders(),
+      headers: this.getHeaders(isAuth),
       responseType: "json",
       params: params
     }).pipe(map(response => {
@@ -44,12 +47,12 @@ export class ApiService {
     }), finalize(() => this.spinnerService.hideSpinner()));
   }
 
-  async POSTCallAsync<T>(apiEndPoint: string, reqBody: Object) {
-    return firstValueFrom(this.POSTCall<T>(apiEndPoint, reqBody));
+  async POSTCallAsync<T>(apiEndPoint: string, reqBody: Object, isAuth?:boolean) {
+    return firstValueFrom(this.POSTCall<T>(apiEndPoint, reqBody, isAuth));
   }
 
-  async GETCallAsync<T>(apiEndPoint: string, params?: GetParamsType) {
-    return firstValueFrom(this.GETCall<T>(apiEndPoint, params));
+  async GETCallAsync<T>(apiEndPoint: string, params?: GetParamsType, isAuth?:boolean) {
+    return firstValueFrom(this.GETCall<T>(apiEndPoint, params, isAuth));
   }
 
 }

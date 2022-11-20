@@ -1,3 +1,12 @@
 <button pButton uploadButton type="button" label="Upload" class="p-button-outlined"
-  [uploadOptions]="uploadOptions" [uploader]="uploader">
+  [uploadOptions]="uploadOptions" [uploader]="uploader" class="buttonupload">
 </button>
+<p-dialog header="Tag" [(visible)]="displayTagModal" [modal]="true" [style]="{width: '50vw'}" [maximizable]="false" [baseZIndex]="10000"
+    [draggable]="false" [resizable]="false">
+     <img src="{{imgsrc}}">
+     <p-dropdown [options]="TagList" style="margin-left: 116px;
+     position: absolute;" [(ngModel)]="selectedTag" optionLabel="en"></p-dropdown>
+        <ng-template pTemplate="footer">
+            <p-button icon="pi pi-check" (click)="displayTagModal=false;saveTag()" label="Save Tag" class="p-button-text"></p-button>
+        </ng-template>
+</p-dialog>
