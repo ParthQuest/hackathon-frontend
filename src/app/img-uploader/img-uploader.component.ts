@@ -55,8 +55,6 @@ export class ImgUploaderComponent implements OnInit {
   ngOnInit(): void { }
 
   async categories(url: string) {
-    this.imgsrc = '';
-    this.categoryName =''
     this.imgsrc = url;
     var splitImg = url.substring(0, url.lastIndexOf('/'));
     this.imgUploadService.getCategoryList(splitImg).then(categItems => {
@@ -88,6 +86,8 @@ export class ImgUploaderComponent implements OnInit {
       Tags: this.TagListData
     }
     await this.imgUploadService.saveTag(req);
+    this.imgsrc = '';
+    this.categoryName =''
     this.getTreeList.emit();
   }
 
