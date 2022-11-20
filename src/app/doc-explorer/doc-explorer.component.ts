@@ -22,6 +22,10 @@ export class DocExplorerComponent implements OnInit {
   constructor(private docService: DocExplorerService) { }
 
   ngOnInit(): void {
+    this.initExplorer();
+  }
+
+  initExplorer() {
     this.setFolderMenu();
     this.setFolderSpace();
   }
