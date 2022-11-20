@@ -103,7 +103,7 @@ export class DocExplorerComponent implements OnInit {
     this.breadcrumbItems.splice(existingIndex);
   }
 
-  onNodeSelect(event: vm.INodeSelectEvent) {
+  onFolderSelect(event: vm.INodeSelectEvent) {
     this.setFolderSpace(event.node.data);
   }
 

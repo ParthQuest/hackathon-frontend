@@ -1,6 +1,6 @@
 <div class="page-wrap">
   <aside class="page-sidebar">
-    <p-tree [value]="menuItems" selectionMode="single" (onNodeSelect)="onNodeSelect($event)">
+    <p-tree [value]="menuItems" selectionMode="single" (onNodeSelect)="onFolderSelect($event)">
       <ng-template let-node pTemplate="default">
         <span class="p-treenode-label">
           <span>{{node.label}}</span>
