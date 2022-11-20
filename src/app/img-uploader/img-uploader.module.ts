@@ -4,6 +4,10 @@ import { ImgUploaderRoutingModule } from './img-uploader-routing.module';
 import { ImgUploaderComponent } from './img-uploader.component';
 import { UploaderModule } from "angular-uploader";
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import {DropdownModule} from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -13,10 +17,15 @@ import { ButtonModule } from 'primeng/button';
     CommonModule,
     ImgUploaderRoutingModule,
     UploaderModule,
-    ButtonModule
+    ButtonModule,
+    DialogModule,
+    DropdownModule,
+    FormsModule
+
   ],
   exports: [
     ImgUploaderComponent
-  ]
+  ],
+  providers: []
 })
 export class ImgUploaderModule { }
