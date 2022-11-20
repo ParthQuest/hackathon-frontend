@@ -16,13 +16,14 @@
         </div>
         <div class="col-3">
           <span class="p-float-label">
-            <input type="search" id="inputtext" pInputText [(ngModel)]="searchText" (keydown.enter)="onFileSearch()" (change)="onFileSearch()">
+            <input type="search" id="inputtext" pInputText [(ngModel)]="searchText"
+              (search)="onFileSearch()" style="height: 3.5rem;">
             <label for="inputtext">Search</label>
           </span>
         </div>
       </div>
     </section>
-    <section style="margin-top: 1rem;">
+    <section style="margin: 1rem;">
       <ng-container *ngFor="let item of selectedFolder; let i = index;">
         <div *ngIf="item?.IsFolder; else fileItem;" style="cursor: pointer;" (click)="setFolderSpace(item?.Id)">
           <i class="pi pi-folder" style="margin-right: 0.5rem;"></i>
