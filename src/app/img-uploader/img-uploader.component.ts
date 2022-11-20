@@ -58,6 +58,8 @@ export class ImgUploaderComponent implements OnInit {
   };
 
   async categories(url: string) {
+    this.imgsrc ='';
+    this.imgsrc = url;
     var splitImg = url.substring(0, url.lastIndexOf('/'));
     this.imgUploadService.getCategoryList(splitImg).then(categItems => {
       this.categoryName = categItems.categories[0].name.en;
@@ -74,10 +76,7 @@ export class ImgUploaderComponent implements OnInit {
   }
 
   opensaveTagModal(url, files) {
-    this.imgsrc ='';
     this.displayTagModal = true;
-    debugger
-    this.imgsrc = url;
     this.fileName = files[0].originalFile.file.name,
       this.fileUrl = url
   }

@@ -9,10 +9,6 @@ const routes: Routes = [
     path: "home",
     redirectTo: '',
     pathMatch: "full"
-  },
-  {
-    path: 'upload',
-    loadChildren: () => import("./img-uploader/img-uploader.module").then(m => m.ImgUploaderModule)
   }
 ];
 
