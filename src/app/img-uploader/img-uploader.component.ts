@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Uploader, UploaderOptions } from "uploader";
 import { ImgUploaderService } from './img-uploader.service';
 
@@ -10,7 +10,7 @@ import { ImgUploaderService } from './img-uploader.service';
 export class ImgUploaderComponent implements OnInit {
 
   constructor(private imgUploadService: ImgUploaderService) { }
-  
+  @Output() getTreeList = new EventEmitter<string>();
   categoryName: string = '';
   displayTagModal: boolean = false;
   imgsrc: string = '';
@@ -56,6 +56,7 @@ export class ImgUploaderComponent implements OnInit {
 
   async categories(url: string) {
     this.imgsrc = '';
+    this.categoryName =''
     this.imgsrc = url;
     var splitImg = url.substring(0, url.lastIndexOf('/'));
     this.imgUploadService.getCategoryList(splitImg).then(categItems => {
@@ -67,7 +68,7 @@ export class ImgUploaderComponent implements OnInit {
     var splitImg = url.substring(0, url.lastIndexOf('/'));
     this.imgUploadService.getTagList(splitImg).then(taglist => {
       this.TagList = taglist.tags.length > 7 ? taglist.tags.map(x => x.tag).splice(0, this.TagLimit) : taglist.tags.map(x => x.tag);
-      this.TagListData = taglist.tags.map(x => x.tag.en);
+      this.TagListData = taglist.tags.length > 7 ? taglist.tags.map(x => x.tag.en).splice(0, this.TagLimit):taglist.tags.map(x => x.tag.en);
     });
     this.opensaveTagModal(url, files);
   }
@@ -78,7 +79,7 @@ export class ImgUploaderComponent implements OnInit {
       this.fileUrl = url
   }
 
-  saveTag() {
+  async saveTag() {
     var req = {
       FileName: this.fileName,
       FileUrl: this.fileUrl,
@@ -86,7 +87,8 @@ export class ImgUploaderComponent implements OnInit {
       SubCategoryName: this.selectedTag.en,
       Tags: this.TagListData
     }
-    this.imgUploadService.saveTag(req);
+    await this.imgUploadService.saveTag(req);
+    this.getTreeList.emit();
   }
 
 }
