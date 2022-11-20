@@ -25,13 +25,15 @@
     </section>
     <section style="margin: 1rem;">
       <ng-container *ngFor="let item of selectedFolder; let i = index;">
-        <div *ngIf="item?.IsFolder; else fileItem;" style="cursor: pointer;" (click)="setFolderSpace(item?.Id)">
+        <div *ngIf="item?.IsFolder; else fileItem;" style="cursor: pointer; margin: 1rem 0;" (click)="setFolderSpace(item?.Id)">
           <i class="pi pi-folder" style="margin-right: 0.5rem;"></i>
           <span>{{item?.Name}}</span>
         </div>
         <ng-template #fileItem>
-          <img #img [src]="item?.FileUrl" (error)="img.src = errorImgSrc" alt="img_{{i}}" style="height: 100px; border-radius: 1rem;">
-          <span>{{item?.Name}}</span>
+          <div style="display: inline-block;">
+            <img #img id="img_{{i}}" [src]="item?.FileUrl" (error)="img.src = errorImgSrc" alt="img_{{i}}" style="height: 100px; border-radius: 1rem;">
+            <label for="img_{{i}}" style="padding: 0 0.5rem;">{{item?.Name}}</label>
+          </div>
         </ng-template>
       </ng-container>
     </section>
