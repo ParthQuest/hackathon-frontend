@@ -49,6 +49,7 @@ export class DocExplorerComponent implements OnInit {
 
   setFolderSpace(folderId?: number) {
     this.docService.getFolderData(folderId).then(data => {
+      this.searchText = '';
       this.selectedFolder = data;
       this.setBreadcrumbs(folderId);
       this.updateFolderMenu(folderId);

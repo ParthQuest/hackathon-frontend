@@ -33,3 +33,47 @@
 .page-main {
   grid-column: 2 / 2;
 }
+
+.folder-item {
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.folder-item:hover {
+  background: #e9ecef;
+  color: #495057;
+  border-radius: 0.4rem;
+}
+
+.file-item {
+  padding: 0.5rem 0.5rem 0.5rem 0;
+  display: flex;
+}
+
+.file-item img {
+  height: 100px;
+  border-radius: 1rem;
+}
+
+.file-item img+div.label-block {
+  padding: 0 0.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+section.folder-section {
+  margin: 1rem 0;
+  height: calc(100% - 7.6rem);
+  overflow-y: auto;
+}
+
+.label-block label {
+  display: block;
+  padding: 0.5rem;
+}
+
+.label-block label:nth-child(2){
+  font-size: small;
+  opacity: 0.54;
+}
