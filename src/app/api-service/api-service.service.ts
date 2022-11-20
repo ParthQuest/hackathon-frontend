@@ -1,14 +1,18 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, firstValueFrom, map } from "rxjs";
+import { catchError, finalize, firstValueFrom, map } from "rxjs";
 import { GetParamsType } from "../common";
+import { CommonSpinnerService } from "../common-spinner/common-spinner.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class ApiService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private spinnerService: CommonSpinnerService
+  ) { }
 
   getHeaders(isAuth?:boolean) {
     let headers = new HttpHeaders({
@@ -20,6 +24,7 @@ export class ApiService {
   }
 
   POSTCall<T>(apiEndPoint: string, reqBody: Object, isAuth?:boolean) {
+    this.spinnerService.showSpinner();
     return this.http.post<T>(apiEndPoint, reqBody, {
       headers: this.getHeaders(isAuth),
       responseType: "json"
@@ -27,7 +32,7 @@ export class ApiService {
       return response;
     }), catchError((err, caught) => {
       throw err;
-    }));
+    }), finalize(() => this.spinnerService.hideSpinner()));
   }
 
   GETCall<T>(apiEndPoint: string, params?: GetParamsType, isAuth?:boolean) {
@@ -39,7 +44,7 @@ export class ApiService {
       return response;
     }), catchError((err, caught) => {
       throw err;
-    }));
+    }), finalize(() => this.spinnerService.hideSpinner()));
   }
 
   async POSTCallAsync<T>(apiEndPoint: string, reqBody: Object, isAuth?:boolean) {

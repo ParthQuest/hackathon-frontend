@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { DocExplorerService } from './doc-explorer.service';
 import { DocExplorerVM as vm } from "./doc-explorer.model";
-import { isDefined, isNotEmptyArray } from '../common';
+import { isNotEmptyArray } from '../common';
 import { TreeNode } from 'primeng/api';
 
 @Component({
@@ -60,22 +60,33 @@ export class DocExplorerComponent implements OnInit {
 
   setBreadcrumbs(id?: number) {
     let breadcrumbs = new Array<MenuItem>();
+    let parentThis = this;
     if (id) {
-      let recursiveFind = (items: Array<TreeNode>, folderId: number) => {
+      let recursiveSet = (items: Array<TreeNode>, folderId: number) => {
         function iter(a: TreeNode) {
           if (a.data === folderId) {
-            result = a;
+            result.push({
+              label: a.label,
+              id: a.data,
+              command: (event) => parentThis.setFolderSpace(a.data)
+            });
             return true;
           }
-          return Array.isArray(a.children) && a.children.some(iter);
+          let isFound: boolean = Array.isArray(a.children) && a.children.some(iter);
+          if (isFound)
+            result.push({
+              label: a.label,
+              id: a.data,
+              command: (event) => parentThis.setFolderSpace(a.data)
+            });
+          return isFound;
         }
 
-        let result: TreeNode = { };
+        let result = new Array<MenuItem>();
         items.some(iter);
-        return result;
+        return result.reverse();
       }
-      let folderNode = recursiveFind(this.menuItems, id);
-      // breadcrumbs = folderNode.
+      breadcrumbs = recursiveSet(this.menuItems, id);
     }
     this.breadcrumbItems = breadcrumbs;
   }
@@ -92,7 +103,7 @@ export class DocExplorerComponent implements OnInit {
     this.breadcrumbItems.splice(existingIndex);
   }
 
-  onNodeSelect(event: vm.INodeSelectEvent) {
+  onFolderSelect(event: vm.INodeSelectEvent) {
     this.setFolderSpace(event.node.data);
   }
 
