@@ -26,7 +26,7 @@
         </div>
       </div>
     </section>
-    <section style="margin: 1rem 0;">
+    <section class="folder-section">
       <ng-container *ngFor="let item of selectedFolder; let i = index;">
         <div *ngIf="item?.IsFolder; else fileItem;" class="folder-item" (click)="setFolderSpace(item?.Id)">
           <i class="pi pi-folder" style="margin-right: 0.5rem;"></i>
@@ -35,7 +35,10 @@
         <ng-template #fileItem>
           <div class="file-item">
             <img #img id="img_{{i}}" [src]="item?.FileUrl" (error)="img.src = errorImgSrc" alt="img_{{i}}">
-            <label for="img_{{i}}">{{item?.Name}}</label>
+            <div class="label-block">
+              <label for="img_{{i}}">{{item?.Name}}</label>
+              <label *ngIf="searchText" for="img_{{i}}">{{item?.Path?.split('\\')?.join('\t>\t')}}</label>
+            </div>
           </div>
         </ng-template>
       </ng-container>

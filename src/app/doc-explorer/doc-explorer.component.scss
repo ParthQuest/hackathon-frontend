@@ -46,7 +46,8 @@
 }
 
 .file-item {
-  padding: 0.5rem 0.5rem 0.5rem 0
+  padding: 0.5rem 0.5rem 0.5rem 0;
+  display: flex;
 }
 
 .file-item img {
@@ -54,6 +55,25 @@
   border-radius: 1rem;
 }
 
-.file-item img+label {
+.file-item img+div.label-block {
   padding: 0 0.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+section.folder-section {
+  margin: 1rem 0;
+  height: calc(100% - 7.6rem);
+  overflow-y: auto;
+}
+
+.label-block label {
+  display: block;
+  padding: 0.5rem;
+}
+
+.label-block label:nth-child(2){
+  font-size: small;
+  opacity: 0.54;
 }
