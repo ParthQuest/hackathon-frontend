@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { DocExplorerService } from './doc-explorer.service';
 import { DocExplorerVM as vm } from "./doc-explorer.model";
-import { isNotEmptyArray } from '../common';
+import { isDefined, isNotEmptyArray } from '../common';
+import { TreeNode } from 'primeng/api';
 
 @Component({
   selector: 'app-doc-explorer',
@@ -11,11 +12,12 @@ import { isNotEmptyArray } from '../common';
 })
 export class DocExplorerComponent implements OnInit {
 
-  menuItems = new Array<MenuItem>();
+  menuItems = new Array<TreeNode>();
   breadcrumbItems = new Array<MenuItem>();
   home: MenuItem = { icon: 'pi pi-home', command: (event) => this.setFolderSpace() };
   selectedFolder = new Array<vm.IDMSGetFileResp>();
-  filter: string = '';
+  searchText: string = '';
+  errorImgSrc: string = vm.errorImgSrc;
 
   constructor(private docService: DocExplorerService) { }
 
@@ -25,26 +27,64 @@ export class DocExplorerComponent implements OnInit {
   }
 
   setFolderMenu() {
-    let recursiveMap = (items: Array<vm.IMenuItemResp>): Array<MenuItem> => items.map(x => ({
-      label: x.Name,
-      icon: "pi pi-folder",
-      id: x.Id?.toString(),
-      items: isNotEmptyArray(x.Items) ? recursiveMap(x.Items) : undefined,
-      command: (event) => this.setFolderSpace(x.Name, x.Id)
-    }));
+    let recursiveMap = (items: Array<vm.IMenuItemResp>): Array<TreeNode> => items.map(x => {
+      let item: TreeNode;
+      item = {
+        label: x.Name,
+        collapsedIcon: "pi pi-folder",
+        expandedIcon: "pi pi-folder-open",
+        data: x.Id,
+        children: isNotEmptyArray(x.Items) ? recursiveMap(x.Items) : undefined
+      };
+      return item;
+    });
     this.docService.getFolderMenu().then(items => {
       this.menuItems = recursiveMap(items);
     }).catch(error => { });
   }
 
-  setFolderSpace(folderName?: string, folderId?: number) {
+  setFolderSpace(folderId?: number) {
     this.docService.getFolderData(folderId).then(data => {
       this.selectedFolder = data;
-      if (folderName && folderId)
-        this.appendBreadcrumb(folderName, folderId);
-      else
-        this.breadcrumbItems = new Array<MenuItem>();
+      this.setBreadcrumbs(folderId);
     }).catch(error => { });
+  }
+
+  setSearchTerm() {
+    let lastBreadcrumb = this.breadcrumbItems[this.breadcrumbItems.length - 1];
+    this.docService.getSearchFiles(this.searchText, lastBreadcrumb?.id ? +lastBreadcrumb.id : undefined).then(list => {
+      this.selectedFolder = list;
+      this.setBreadcrumbs();
+    }).catch(error => { });
+  }
+
+  setBreadcrumbs(id?: number) {
+    let breadcrumbs = new Array<MenuItem>();
+    if (id) {
+      let recursiveFind = (items: Array<TreeNode>, folderId: number) => {
+        function iter(a: TreeNode) {
+          if (a.data === folderId) {
+            result = a;
+            return true;
+          }
+          return Array.isArray(a.children) && a.children.some(iter);
+        }
+
+        let result: TreeNode = { };
+        items.some(iter);
+        return result;
+      }
+      let folderNode = recursiveFind(this.menuItems, id);
+      // breadcrumbs = folderNode.
+    }
+    this.breadcrumbItems = breadcrumbs;
+  }
+
+  onFileSearch() {
+    if (this.searchText)
+      this.setSearchTerm();
+    else
+      this.setFolderSpace();
   }
 
   onBreadcrumbClick(item: MenuItem) {
@@ -52,14 +92,8 @@ export class DocExplorerComponent implements OnInit {
     this.breadcrumbItems.splice(existingIndex);
   }
 
-  appendBreadcrumb(label: string, id: number) {
-    if (!~this.breadcrumbItems.findIndex(x => x.id == id.toString())) {
-      this.breadcrumbItems = [ ...this.breadcrumbItems, {
-        label: label,
-        id: id.toString(),
-        command: (event) => this.setFolderSpace(label, id)
-      }];
-    }
+  onNodeSelect(event: vm.INodeSelectEvent) {
+    this.setFolderSpace(event.node.data);
   }
 
 }

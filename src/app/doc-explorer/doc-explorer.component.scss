@@ -1,7 +1,10 @@
 .page-wrap {
   background: white;
-  height: calc(100vh - 20px);
+  height: calc(100vh - 48px);
   box-shadow: 0 0 3px rgba(black, 0.33);
+
+  margin: 1rem;
+  padding: 2rem;
 
   display: grid;
   grid-template-columns: minmax(10px, 1fr) minmax(10px, 3fr);

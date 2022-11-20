@@ -14,7 +14,7 @@ export class DocExplorerService {
     let getReq: vm.IDMSGetReq = {
       FolderId: folderId
     };
-    return this.apiService.POSTCallAsync<IAPIResponse<Array<vm.IDMSGetFileResp>>>(vm.UrlConst.DMSGet, getReq).then(response => {
+    return this.apiService.POSTCallAsync<IAPIResponse<Array<vm.IDMSGetFileResp>>>(vm.UrlConst.GetFolder, getReq).then(response => {
       if (response.ResponseStatus == responseStatus.Success)
         return response.ResponseData;
       else
@@ -25,7 +25,22 @@ export class DocExplorerService {
   }
 
   async getFolderMenu() {
-    return this.apiService.GETCallAsync<IAPIResponse<Array<vm.IMenuItemResp>>>(vm.UrlConst.DMSGetMenu).then(response => {
+    return this.apiService.GETCallAsync<IAPIResponse<Array<vm.IMenuItemResp>>>(vm.UrlConst.GetMenu).then(response => {
+      if (response.ResponseStatus == responseStatus.Success)
+        return response.ResponseData;
+      else
+        throw new Error(response.ErrorData?.Error ?? response.Message);
+    }).catch(error => {
+      throw error;
+    });
+  }
+
+  async getSearchFiles(searchTerm: string, folderId?: number) {
+    let req: vm.ISearchFileReq = {
+      Name: searchTerm,
+      FolderId: folderId
+    }
+    return this.apiService.POSTCallAsync<IAPIResponse<Array<vm.IGetFileWithTagResp>>>(vm.UrlConst.SearchFile, req).then(response => {
       if (response.ResponseStatus == responseStatus.Success)
         return response.ResponseData;
       else

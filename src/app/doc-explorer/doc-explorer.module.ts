@@ -7,6 +7,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from "primeng/inputtext";
+import { TreeModule } from 'primeng/tree';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { InputTextModule } from "primeng/inputtext";
     PanelMenuModule,
     BreadcrumbModule,
     FormsModule,
-    InputTextModule
+    InputTextModule,
+    TreeModule
   ],
   exports: [
     DocExplorerComponent
