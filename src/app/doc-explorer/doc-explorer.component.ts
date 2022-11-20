@@ -47,6 +47,7 @@ export class DocExplorerComponent implements OnInit {
     this.docService.getFolderData(folderId).then(data => {
       this.selectedFolder = data;
       this.setBreadcrumbs(folderId);
+      this.updateFolderMenu(folderId);
     }).catch(error => { });
   }
 
@@ -81,7 +82,6 @@ export class DocExplorerComponent implements OnInit {
             });
           return isFound;
         }
-
         let result = new Array<MenuItem>();
         items.some(iter);
         return result.reverse();
@@ -105,6 +105,25 @@ export class DocExplorerComponent implements OnInit {
 
   onFolderSelect(event: vm.INodeSelectEvent) {
     this.setFolderSpace(event.node.data);
+  }
+
+  updateFolderMenu(folderId?: number) {
+    this.menuItems.forEach(item => item.expanded = false)
+    if (folderId) {
+      let recursiveSet = (items: Array<TreeNode>, folderId: number) => {
+        function iter(a: TreeNode) {
+          if (a.data === folderId) {
+            a.expanded = true;
+            return true;
+          }
+          let isFound: boolean = Array.isArray(a.children) && a.children.some(iter);
+          a.expanded = isFound;
+          return isFound;
+        }
+        items.some(iter);
+      }
+      recursiveSet(this.menuItems, folderId);
+    }
   }
 
 }
